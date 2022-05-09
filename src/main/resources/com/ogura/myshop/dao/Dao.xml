@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis//DTD mapper3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ogura.myshop.dao.Dao">
+	<select id="latestItems" resultType="com.ogura.myshop.entity.item.Item">
+		select
+			*
+		from
+			item
+		order by
+			created_date desc
+		limit
+			5
+	</select>
+	<select id="findByGroupId" resultType="com.ogura.myshop.entity.item.Item">
+		SELECT
+			it.item_id,
+		    it.name,
+		    it.description, 
+		    it.price,
+		    it.price * (t.tax_rate / 100 + 1 )  as 'tax_on_price',
+		    it.status,
+		    it.url,
+		    t.tax_rate  
+		FROM  
+			item as it
+		
+		INNER JOIN
+			tax as t 
+		ON
+			it.tax_id = t.tax_id	
+		WHERE
+			group_id = #{search.searchId}
+			and
+			name like '%${search.searchName}%'
+	</select>
+	<select id="findByAll" resultType="com.ogura.myshop.entity.item.Item">
+		SELECT
+			it.item_id,
+		    it.name,
+		    it.description, 
+		    it.price,
+		    it.price * (t.tax_rate / 100 + 1 )  as 'tax_on_price',
+		    it.status,
+		    it.url,
+		    it.group_id,
+		    t.tax_rate  
+		FROM  
+			item as it
+		
+		INNER JOIN
+			tax as t 
+		ON
+			it.tax_id = t.tax_id	
+		WHERE
+			name like '%${search.searchName}%' 
+	</select>
+	<select id="findByOnly" resultType="com.ogura.myshop.entity.item.Item">
+		SELECT  
+			it.item_id,
+		    it.name,
+		    it.description, 
+		    it.price,
+		    it.price * (t.tax_rate / 100 + 1 )  as 'tax_on_price',
+		    it.status,
+		    it.url,
+		    t.tax_rate  
+		FROM  
+			item as it
+		
+		INNER JOIN
+			tax as t 
+		ON
+			it.tax_id = t.tax_id	
+		WHERE
+			it.item_id = ${id}  
+	</select>
+	<insert id="create" useGeneratedKeys="true" keyProperty="item_id">
+		INSERT INTO
+			 item(tax_id,name,description,price,status,created_date,group_id,url)
+		VALUES
+			(#{itemC.taxId},#{itemC.name},#{itemC.description},#{itemC.price},#{itemC.status},now(),#{itemC.groupId},#{itemC.url})
+	</insert>
+	<update id="update">
+		UPDATE
+			item
+		SET
+			<if test="name != '' ">name=#{itemU.name},</if>
+			<if test="description != '' ">description=#{itemU.description},</if>
+			<if test="price != '' ">price=#{itemU.price},</if>
+			<if test="status != 'none' ">status=#{itemU.status},</if>
+			<if test="group_id != '94' ">group_id=#{itemU.groupId},</if>
+			<if test="tax_id != '94' ">tax_id=#{itemU.taxId},</if>
+			<if test="url != '' ">url=#{itemU.url},</if>
+		WHERE
+			item_id = #{itemU.item_id}
+	</update>
+</mapper>
