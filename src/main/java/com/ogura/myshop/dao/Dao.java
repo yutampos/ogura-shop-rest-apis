@@ -23,4 +23,6 @@ public interface Dao {
     public Item findByOnly(@Param("id") int id);
 
     public void update(@Param("itemU") ItemUpdate itemU);
+
+    public void delete(int itemD);
 }

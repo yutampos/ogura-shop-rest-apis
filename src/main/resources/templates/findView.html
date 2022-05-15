@@ -8,49 +8,33 @@
 	<link th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css}" rel="stylesheet"/>
 </head>
 <body>
-	<header id="navi-bar">
-		<div class="container">
-			<div class="row form-inline  shadow-sm mb-2 bg-body  rounded" >
-				<div class="col-md-4 col-3 form-inline">
-					<h1><a th:href="@{/}"><img class="logo img-fluid" alt="ショッピングサイトOGURA" th:src="@{/img/ogura.jpeg}" width="120" height="80"></a></h1>
-					<a>OGURA</a>
-				</div>
-				
-				<div class="col-md-4 col-9 ">
-					<form class="form-inline " th:action="@{/search}" method="post" th:object="${formData}">
-			        	<div class="form-group "> 
-			    			<div class="input-group" >
-			    				<div class="input-group-prepand " >
-				   					<select class="custom-select " id="button-addon" th:field="*{searchId}">
-							            <option selected="selected"  value="0" >全て</option>
-						                <option  value="1" >食料品</option>
-						                <option  value="2" >美容品</option>
-						                <option  value="3" >雑貨</option>
-					            	</select>	
-			   					</div>
-			   					<input type="text" class="form-control bg-ofline-primary" id="exampleInputAmount"  placeholder="商品名を入力してください"  th:field="*{searchName}" aria-describedby="button-addon">
-			      				<div class="input-group-append">
-				      				<button class="btn btn-primary " type="submit" id="button-addon" >検索</button>
-			      				</div>
-			   				 </div>
-			  			</div>
-			        </form>
-				</div>
-				
-				<div class="col-md-4" >
-					<nav class=" form-inline ">
-				    	<form th:action="@{/cart}" method="post" name="cart-nav" class="mx-auto">
-			    			<a href="javascript:document.cart-nav.submit()">カート</a>
-						</form>
-				    	
-				        <form th:action="@{/loggin}" method="post" name="loggin-nav">
-			    			<a href="javascript:document.loggin-nav.submit()">アカウント情報</a>
-						</form>				        
-			    	</nav>
-				</div>
-			</div>
-		</div>
-    </header>
+	<nav class="navbar navbar-light bg-light static-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}" href="#!"><img class="site-logo" alt="ショッピングサイトOGURA" src="https://seeklogo.com/images/I/i-am-a-bean-logo-DF7AEE03F3-seeklogo.com.png" >OGURA</a>
+            <form class="form-inline " th:action="@{/search}" method="post" th:object="${formData}">
+                <div class="form-group ">               
+                     <div class="input-group" >
+                        <div class="" >
+                            <select class="custom-select" th:field="*{searchId}" >
+                                <option selected="selected"  value="0" >全て</option>
+                                <option  value="1" >食料品</option>
+                                <option  value="2" >美容品</option>
+                                <option  value="3" >雑貨</option>
+                            </select>   
+                        </div>
+                        <input type="text" class="form-control bg-ofline-primary" id="exampleInputAmount"  placeholder="商品名を入力してください"  th:field="*{searchName}" aria-describedby="button-addon">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary " type="submit" id="button-addon" >検索</button>
+                        </div>
+                     </div>
+                </div>
+            </form>
+            <div class="btn-group">
+                <a class="btn btn-outline-primary" href="#signup">カート</a>
+                <a class="btn btn-primary" href="#signup">ログイン</a>
+            </div>
+        </div>
+    </nav>
     
     <main>
     	<h2 th:text="${searchTitle}"></h2>

@@ -82,11 +82,16 @@ public class MainController {
 
     // 以降オーナー設定画面
     @GetMapping("/orner")
+    public String orner() {
+	return "redirect:/update";
+    }
+
+    @GetMapping("/create")
     public String order(@ModelAttribute("itemSet") ItemCreate itemSet, Model model) {
 	int status = 0;
 	model.addAttribute("statusEnable", status);
 
-	return "orner";
+	return "create";
     }
 
     @PostMapping("/set")
@@ -94,7 +99,7 @@ public class MainController {
 	model.addAttribute("created", "登録しました");
 	oguraService.itemCreate(itemCreate);
 
-	return "orner";
+	return "redirect:/update";
     }
 
     @GetMapping("/update")
@@ -103,11 +108,6 @@ public class MainController {
 	model.addAttribute("findData", findItems);
 
 	return "update";
-    }
-
-    @PostMapping("/replace")
-    public String replace() {
-	return "replace";
     }
 
     @GetMapping("/set/{url}")
@@ -128,6 +128,13 @@ public class MainController {
 	Item getOnlyItem = oguraService.findByOnly(url);
 	model.addAttribute("getOnlyItem", getOnlyItem);
 
-	return "updateView";
+	return "redirect:/update";
+    }
+
+    @GetMapping("/delete/{url}")
+    public String itemSet(Model model, @PathVariable("url") int url, Item item) {
+	oguraService.itemDelete(url);
+
+	return "redirect:/update";
     }
 }

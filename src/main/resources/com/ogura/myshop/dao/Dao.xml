@@ -38,6 +38,7 @@
 			it.item_id,
 		    it.name,
 		    it.description, 
+		    it.tax_id,
 		    it.price,
 		    it.price * (t.tax_rate / 100 + 1 )  as 'tax_on_price',
 		    it.status,
@@ -46,23 +47,26 @@
 		    t.tax_rate  
 		FROM  
 			item as it
-		
 		INNER JOIN
 			tax as t 
 		ON
 			it.tax_id = t.tax_id	
 		WHERE
 			name like '%${search.searchName}%' 
+		ORDER BY
+            it.item_id ASC
 	</select>
 	<select id="findByOnly" resultType="com.ogura.myshop.entity.item.Item">
 		SELECT  
 			it.item_id,
 		    it.name,
 		    it.description, 
+		    it.tax_id,
 		    it.price,
 		    it.price * (t.tax_rate / 100 + 1 )  as 'tax_on_price',
 		    it.status,
 		    it.url,
+		    it.group_id,
 		    t.tax_rate  
 		FROM  
 			item as it
@@ -83,15 +87,30 @@
 	<update id="update">
 		UPDATE
 			item
-		SET
-			<if test="name != '' ">name=#{itemU.name},</if>
-			<if test="description != '' ">description=#{itemU.description},</if>
-			<if test="price != '' ">price=#{itemU.price},</if>
-			<if test="status != 'none' ">status=#{itemU.status},</if>
-			<if test="group_id != '94' ">group_id=#{itemU.groupId},</if>
-			<if test="tax_id != '94' ">tax_id=#{itemU.taxId},</if>
-			<if test="url != '' ">url=#{itemU.url},</if>
+		<set>
+            name = #{itemU.name},
+            <!-- description = #{itemU.description}, -->
+            price = #{itemU.price},
+            status = #{itemU.status},
+            group_id = #{itemU.groupId},
+            tax_id = #{itemU.taxId},
+            url = #{itemU.url}
+            <!-- <if test="name != '' ">name = #{itemU},</if> -->
+            <!-- <if test="description != '' ">description = #{itemU.description},</if>
+            <if test="price != '' ">price = #{itemU.price},</if>
+            <if test="status != 'none' ">status = #{itemU.status},</if>
+            <if test="group_id != '94' ">group_id = #{itemU.groupId},</if>
+            <if test="tax_id != '94' ">tax_id = #{itemU.taxId},</if>
+            <if test="url != '' ">url = #{itemU.url}</if> -->
+		</set>
+			
 		WHERE
 			item_id = #{itemU.item_id}
 	</update>
+	<delete id="delete">
+	   DELETE FROM
+	       item
+	   WHERE
+	       item_id = #{itemD.item_id}
+	</delete>
 </mapper>

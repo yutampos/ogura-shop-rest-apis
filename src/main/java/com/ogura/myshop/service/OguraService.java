@@ -39,4 +39,8 @@ public class OguraService {
     public void itemUpdate(ItemUpdate itemUpdate) {
 	dao.update(itemUpdate);
     }
+
+    public void itemDelete(int itemDelete) {
+	dao.delete(itemDelete);
+    }
 }
