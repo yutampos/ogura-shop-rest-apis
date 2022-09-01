@@ -9,6 +9,7 @@ import com.ogura.myshop.dao.Dao;
 import com.ogura.myshop.entity.form.FormData;
 import com.ogura.myshop.entity.item.Item;
 import com.ogura.myshop.entity.item.ItemCreate;
+import com.ogura.myshop.entity.item.ItemImages;
 import com.ogura.myshop.entity.item.ItemUpdate;
 
 @Service
@@ -42,5 +43,9 @@ public class OguraService {
 
     public void itemDelete(int itemDelete) {
 	dao.delete(itemDelete);
+    }
+
+    public List<ItemImages> findByItemImages(int id) {
+	return dao.findByItemImages(id);
     }
 }

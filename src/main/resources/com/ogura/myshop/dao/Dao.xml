@@ -9,7 +9,7 @@
 		order by
 			created_date desc
 		limit
-			5
+			20
 	</select>
 	<select id="findByGroupId" resultType="com.ogura.myshop.entity.item.Item">
 		SELECT
@@ -77,6 +77,17 @@
 			it.tax_id = t.tax_id	
 		WHERE
 			it.item_id = ${id}  
+	</select>
+	<select id="findByItemImages" resultType="com.ogura.myshop.entity.item.ItemImages">
+	   SELECT
+	       id,
+	       item_id,
+	       url
+	   FROM
+	       item_images
+	   WHERE
+	       item_id = ${id}
+	
 	</select>
 	<insert id="create" useGeneratedKeys="true" keyProperty="item_id">
 		INSERT INTO
