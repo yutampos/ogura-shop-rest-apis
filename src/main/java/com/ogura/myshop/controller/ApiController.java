@@ -14,7 +14,8 @@ import com.ogura.myshop.entity.item.ItemImages;
 import com.ogura.myshop.service.OguraService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://www.ogura-shop.com/")
 @RequestMapping("/api")
 public class ApiController {
 
