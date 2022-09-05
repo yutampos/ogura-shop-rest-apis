@@ -1,5 +1,11 @@
 package com.ogura.myshop.entity.orderHistory;
 
-public class OrderItemsDetail {
+import lombok.Data;
 
+@Data
+public class OrderItemsDetail {
+    private Integer orderItemsId;
+    private Integer itemId;
+    private Integer quantity;
+    private Integer productTotal;
 }

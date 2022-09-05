@@ -1,16 +1,24 @@
 package com.ogura.myshop.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ogura.myshop.entity.customer.Customer;
 import com.ogura.myshop.entity.form.FormData;
 import com.ogura.myshop.entity.item.Item;
+import com.ogura.myshop.entity.item.ItemComment;
 import com.ogura.myshop.entity.item.ItemImages;
+import com.ogura.myshop.entity.order.OrderRequest;
+import com.ogura.myshop.entity.orderHistory.OrderHistory;
+import com.ogura.myshop.entity.orderHistory.OrderItemsDetail;
 import com.ogura.myshop.service.OguraService;
 
 @RestController
@@ -93,110 +101,115 @@ public class ApiController {
 	return findItems;
     }
 
-//    @GetMapping("/get/comment/{itemId}")
-//    public List<ItemComment> getItemComment(@PathVariable("itemId") Integer itemId) {
-//	List<ItemComment> getData = null;
-//	try {
-//	    getData = oguraService.findComment(itemId);
-//	} catch (Exception e) {
-//	    System.out.println(e);
-//	}
-//
-//	return getData;
-//    }
-//
-//    @PostMapping("/add/comment")
-//    public void addItemComment(@RequestBody ItemComment itemComment) {
-//
-//	try {
-//	    oguraService.addComment(itemComment);
-//	} catch (Exception e) {
-//	    System.out.println(e);
-//	}
-//
-//    }
-//
-////注文データ関連
-//
-//    // 注文情報を登録する
-//    @PostMapping("/add-order")
-//    public void setCheckoutData(@RequestBody OrderRequest orderRequest) {
-//	try {
-//	    OrderRequest data = orderRequest;
-//	    System.out.println(orderRequest);
-//	    oguraService.createDelivery(data);
-//
-//	    oguraService.createOrderItems(nextOrderItemsId(), data.getCartData());
-//
-//	    try {
-//
-//		if (data.getDeliveryId() != null && nextOrderItemsId() != null) {
-//		    oguraService.createOrderMain(data, nextOrderItemsId());
-//		} else {
-//		    System.out.println("delivery_id もしくは order_items_idが存在しません。");
-//		}
-//
-//	    } catch (Exception error) {
-//		System.out.println(error);
-//	    }
-//	} catch (Exception error) {
-//	    System.out.println(error);
-//	}
-//
-//    }
-//
-//    public Integer nextOrderItemsId() {
-//	Integer orderItemsId = oguraService.nextOrderItemsId();
-//
-//	return orderItemsId;
-//    }
-//
-//    // 注文履歴を取得する
-//    @PostMapping("/order-history/get")
-//    public List<OrderHistory> getOrderHistory(@RequestBody OrderHistory orderHistory) {
-//	String userId = orderHistory.getUserId();
-//	try {
-//	    List<OrderHistory> getData = oguraService.getOrderHistory(userId);
-//
-//	    List<OrderItemsDetail> getItemsDetail = oguraService.findOrderItemsDetail(userId);
-//
-//	    // OrderHistoryの中のアイテム詳細リスト（List<OrderItemsDetail>）に購入商品リストID（orderItemsId）が一致したアイテムデータだけを格納している。
-//	    getData.forEach((d) -> {
-//		List<OrderItemsDetail> detail = new ArrayList<OrderItemsDetail>();
-//		getItemsDetail.stream().filter(str -> str.getOrderItemsId() == d.getOrderItemsId())
-//			.forEach(each -> detail.add(each));
-//		d.setOrderItemsDetail(detail);
-//	    });
-//	    return getData;
-//	} catch (Exception e) {
-//	    System.out.println(e);
-//
-//	}
-//	return null;
-//
-//    }
-//
-//// 顧客データ関連
-//
-//    // お客様情報を取得する
-//    @PostMapping("/customer/get")
-//    public Customer findCustomer(@RequestBody Customer customer) {
-//	Customer getData = oguraService.findCustomer(customer);
-//	try {
-//	    if (getData == null) {
-//		oguraService.createFirstCustomer(customer);
-//	    } else {
-//	    }
-//	} catch (Exception e) {
-//	    System.out.println(e);
-//	}
-//	return getData;
-//    }
-//
-//    // お客様情報を編集する
-//    @PostMapping("/customer/edit")
-//    public void editCustomer(@RequestBody Customer customer) {
-//	oguraService.updateCustomer(customer);
-//    }
-//
+    @GetMapping("/get/comment/{itemId}")
+    public List<ItemComment> getItemComment(@PathVariable("itemId") Integer itemId) {
+	List<ItemComment> getData = null;
+	try {
+	    getData = oguraService.findComment(itemId);
+	} catch (Exception e) {
+	    System.out.println(e);
+	}
+
+	return getData;
+    }
+
+    @PostMapping("/add/comment")
+    public void addItemComment(@RequestBody ItemComment itemComment) {
+
+	try {
+	    oguraService.addComment(itemComment);
+	} catch (Exception e) {
+	    System.out.println(e);
+	}
+
+    }
+
+//注文データ関連
+
+    // 注文情報を登録する
+    @PostMapping("/add-order")
+    public void setCheckoutData(@RequestBody OrderRequest orderRequest) {
+	try {
+	    OrderRequest data = orderRequest;
+	    System.out.println(orderRequest);
+	    oguraService.createDelivery(data);
+	    System.out.println(data);
+
+	    Integer latestOrderItemsId = LatestOrderItemsId();
+
+	    oguraService.createOrderItems(latestOrderItemsId, data.getCartData());
+	    System.out.println(latestOrderItemsId);
+	    try {
+
+		if (data.getDeliveryId() != null && latestOrderItemsId != null) {
+		    oguraService.createOrderMain(data, latestOrderItemsId);
+
+		} else {
+		    System.out.println("delivery_id もしくは order_items_idが存在しません。");
+		}
+
+	    } catch (Exception error) {
+		System.out.println(error);
+	    }
+	} catch (Exception error) {
+	    System.out.println(error);
+	}
+
+    }
+
+    public Integer LatestOrderItemsId() {
+	Integer orderItemsId = oguraService.nextOrderItemsId();
+
+	return orderItemsId;
+    }
+
+    // 注文履歴を取得する
+    @PostMapping("/order-history/get")
+    public List<OrderHistory> getOrderHistory(@RequestBody OrderHistory orderHistory) {
+	String userId = orderHistory.getUserId();
+	try {
+	    List<OrderHistory> getData = oguraService.findOrderHistory(userId);
+	    System.out.println(getData);
+
+	    List<OrderItemsDetail> getItemsDetail = oguraService.findOrderItemsDetail(userId);
+
+	    // OrderHistoryの中のアイテム詳細リスト（List<OrderItemsDetail>）に購入商品リストID（orderItemsId）が一致したアイテムデータだけを格納している。
+	    getData.forEach((d) -> {
+		List<OrderItemsDetail> detail = new ArrayList<OrderItemsDetail>();
+		getItemsDetail.stream().filter(str -> str.getOrderItemsId() == d.getOrderItemsId())
+			.forEach(each -> detail.add(each));
+		d.setOrderItemsDetail(detail);
+	    });
+	    return getData;
+	} catch (Exception e) {
+	    System.out.println(e);
+
+	}
+	return null;
+
+    }
+
+// 顧客データ関連
+
+    // お客様情報を取得する
+    @PostMapping("/customer/get")
+    public Customer findCustomer(@RequestBody Customer customer) {
+	Customer getData = oguraService.findCustomer(customer);
+	try {
+	    if (getData == null) {
+		oguraService.registerOfCustomer(customer);
+	    } else {
+	    }
+	} catch (Exception e) {
+	    System.out.println(e);
+	}
+	return getData;
+    }
+
+    // お客様情報を編集する
+    @PostMapping("/customer/edit")
+    public void editCustomer(@RequestBody Customer customer) {
+	oguraService.updateCustomer(customer);
+    }
+
 }

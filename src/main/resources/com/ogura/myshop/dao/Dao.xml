@@ -89,12 +89,140 @@
 	       item_id = ${id}
 	
 	</select>
+	<select id="findComment" resultType="com.ogura.myshop.entity.item.ItemComment">
+	   SELECT
+	       *
+	   FROM
+	       comment
+	   WHERE
+	       item_id = ${id}
+	</select>
+	<insert id="addComment">
+	   INSERT INTO
+	       comment(item_id,name,comment,rating,created_date)
+	   VALUES
+	       (#{ic.itemId},#{ic.name},#{ic.comment},#{ic.rating},now())
+	</insert>
 	<insert id="create" useGeneratedKeys="true" keyProperty="item_id">
 		INSERT INTO
 			 item(tax_id,name,description,price,status,created_date,group_id,url)
 		VALUES
 			(#{itemC.taxId},#{itemC.name},#{itemC.description},#{itemC.price},#{itemC.status},now(),#{itemC.groupId},#{itemC.url})
 	</insert>
+	<insert id="createDelivery" useGeneratedKeys="true" keyProperty="deliveryId">
+        INSERT INTO
+             delivery(zip_code,prefecture,city,other_address,delivery_charge,order_date)
+        VALUES
+            (#{od.zipCode},#{od.prefecture},#{od.city},#{od.otherAddress},#{od.deliveryCharge},now())
+    </insert>
+    <select id="nextOrderItemsId" resultType="int">
+        SELECT
+            order_items_id
+        FROM
+            order_items
+        ORDER BY
+            order_items_id DESC
+        LIMIT 1
+    </select>
+    <insert id="createOrderItems">
+        INSERT INTO
+            order_items(order_items_id,item_id,quantity,product_total)
+        VALUES
+            <foreach collection="cd" item="item" separator=",">
+		        (
+		            ${id} + 1,
+		            #{item.itemId},
+		            #{item.quantity},
+		            ${item.price} * ${item.quantity}
+		         )
+            </foreach>
+    </insert>
+    <insert id="createOrderMain">
+        INSERT INTO
+            order_main(delivery_id,user_id,order_items_id,total_payment)
+        VALUES
+            (#{od.deliveryId},#{od.userId},#{orderItemsId},#{od.totalPayment})
+    </insert>
+    <select id="findOrderHistory" resultType="com.ogura.myshop.entity.orderHistory.OrderHistory">
+        SELECT
+            om.id,
+            om.order_items_id,
+            om.delivery_id,
+            de.other_address,
+            de.zip_code,
+            de.prefecture,
+            de.city,
+            de.order_date,
+            de.delivery_date,
+            de.delivery_charge,
+            om.total_payment
+        FROM
+            order_main AS om
+        INNER JOIN
+            delivery AS de
+        ON
+           de.delivery_id = om.delivery_id
+        WHERE
+            om.user_id = #{userId}
+        ORDER BY
+            de.order_date DESC
+    </select>
+    <select id="findOrderItemsDetail" resultType="com.ogura.myshop.entity.orderHistory.OrderItemsDetail">
+        SELECT
+            oi.order_items_id,
+            oi.item_id,
+            oi.quantity,
+            oi.product_total
+        FROM
+            order_main AS om
+        INNER JOIN
+            order_items AS oi
+        ON
+            oi.order_items_id = om.order_items_id
+        WHERE
+            om.user_id = #{userId}
+    </select>
+    <select id="findCustomer" resultType="com.ogura.myshop.entity.customer.Customer">
+        SELECT
+            user_id,
+            nickname,
+            first_name,
+            last_name,
+            first_name_kana,
+            last_name_kana,
+            zip_code,
+            prefecture,
+            city,
+            other_address,
+            email,
+            tell
+        FROM
+            customers
+        WHERE
+            user_id = #{customer.userId}
+    </select>
+    <insert id="registerOfCustomer">
+        INSERT INTO
+            customer(user_id)
+        VALUES
+            (${customer.userId})
+    </insert>
+    <update id="updateCustomer">
+        UPDATE
+            customers
+        SET
+            user_id = #{customer.userId},
+            nickname = #{customer.nickname},
+            first_name = #{customer.firstName},
+            last_name = #{customer.lastName},
+            first_name_kana = #{customer.firstNameKana},
+            last_name_kana = #{customer.lastNameKana},
+            zip_code = #{customer.zipCode},
+            prefecture = #{customer.prefecture},
+            city = #{customer.city},
+            email = #{customer.email},
+            tell = #{customer.tell}
+    </update>
 	<update id="update">
 		UPDATE
 			item
@@ -114,7 +242,6 @@
             <if test="tax_id != '94' ">tax_id = #{itemU.taxId},</if>
             <if test="url != '' ">url = #{itemU.url}</if> -->
 		</set>
-			
 		WHERE
 			item_id = #{itemU.item_id}
 	</update>
