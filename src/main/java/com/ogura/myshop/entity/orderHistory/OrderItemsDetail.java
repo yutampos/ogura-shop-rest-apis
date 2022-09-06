@@ -12,4 +12,6 @@ public class OrderItemsDetail {
     private Integer productTotal;
     private Date orderDate;
     private Date deliveryDate;
+    private String name;
+    private String url;
 }

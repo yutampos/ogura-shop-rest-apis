@@ -174,7 +174,9 @@
             oi.quantity,
             oi.product_total,
             de.order_date,
-            de.delivery_date
+            de.delivery_date,
+            i.name,
+            i.url
         FROM
             order_main AS om
         INNER JOIN
@@ -185,6 +187,10 @@
             delivery AS de
         ON
            de.delivery_id = om.delivery_id
+        INNER JOIN
+            item AS i
+        ON
+            i.item_id = oi.item_id
         WHERE
             om.user_id = #{userId}
     </select>
