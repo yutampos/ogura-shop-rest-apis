@@ -1,6 +1,7 @@
 package com.ogura.myshop.entity.orderHistory;
 
 import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class OrderItemsDetail {
     private Integer quantity;
     private Integer productTotal;
     private Date orderDate;
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
     private String name;
     private String url;
 }
