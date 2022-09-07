@@ -223,7 +223,6 @@
         UPDATE
             customers
         SET
-            user_id = #{customer.userId},
             nickname = #{customer.nickname},
             first_name = #{customer.firstName},
             last_name = #{customer.lastName},
@@ -234,6 +233,8 @@
             city = #{customer.city},
             email = #{customer.email},
             tell = #{customer.tell}
+        WHERE
+            user_id = #{customer.userId}
     </update>
 	<update id="update">
 		UPDATE

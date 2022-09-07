@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class OrderRequest {
-    private Integer userId;
+    private String userId;
     private String otherAddress;
     private String zipCode;
     private String prefecture;
