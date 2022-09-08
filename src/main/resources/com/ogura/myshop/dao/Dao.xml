@@ -141,7 +141,7 @@
         INSERT INTO
             order_main(delivery_id,user_id,order_items_id,total_payment)
         VALUES
-            (#{od.deliveryId},#{od.userId},#{orderItemsId},#{od.totalPayment})
+            (#{od.deliveryId},#{od.userId},#{orderItemsId} + 1,#{od.totalPayment})
     </insert>
     <select id="findOrderHistory" resultType="com.ogura.myshop.entity.orderHistory.OrderHistory">
         SELECT
